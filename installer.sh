@@ -2,10 +2,8 @@
 ######################################
 #| Autoscript SSH + VPN for CentOS 7 |
 ######################################
-
 set -e
 myip=$(wget -qO- ipv4.icanhazip.com);
-
 if [[ $EUID != 0 ]]; then
     echo "Script needs to be run as root user"
 exit 1
@@ -41,8 +39,7 @@ bgpurple='\e[1;3;45m'
 bgcyan='\e[1;3;46m'
 bgwhite='\e[1;3;47m'
 
-
-function VARIntializer {
+function Varinit {
   echo -e "${cyan} ======================= ${noclr}" "${purple} AUTOSCRIPT SSH+VPN CENTOS 7 ${noclr}" "${cyan} ======================= ${noclr}"
   OS=uname -p;
 }
