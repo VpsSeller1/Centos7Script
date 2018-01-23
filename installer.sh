@@ -41,13 +41,11 @@ bgpurple='\e[1;3;45m'
 bgcyan='\e[1;3;46m'
 bgwhite='\e[1;3;47m'
 
-#varinit
-echo -e "${cyan} ======================= ${noclr}" "${purple} AUTOSCRIPT SSH+VPN CENTOS 7 ${noclr}" "${cyan} ======================= ${noclr}"
-OS=uname -p;
 
 #useroot
 echo "Switching to root..."
 cd
+
 
 #setlocate
 echo "Setting Locale.."
