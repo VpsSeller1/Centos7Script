@@ -2,7 +2,6 @@
 ######################################
 #| Autoscript SSH + VPN for CentOS 7 |
 ######################################
-
 if [ $USER != 'root' ]; then
 echo "Sorry, for run the script please using root user"
 exit 1
@@ -16,28 +15,31 @@ fi
 echo "OK ! The installation will start now !"
 #source
 
+
 source="https://github.com/VpsSeller1/Centos7Script"
 
-# Reset
-noclr='\e[0m'
 
 # IpAddress
 myip='$(wget -qO- ipv4.icanhazip.com)';
 
+
 # useroot
 echo "Switching to root..."
 cd
+
 
 # setlocate
 echo "Setting Locale.."
 sed -i 's/AcceptEnv/#AcceptEnv/g' /etc/ssh/sshd_config
 service sshd restart
 
+
 # DisableIPV6
   echo "Disabling IPV6..."
   echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
 sed -i '$ i\echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6' /etc/rc.local
 sed -i '$ i\echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6' /etc/rc.d/rc.local
+
 
 # InstallAPTGet
   echo "Installing apt-get..."
@@ -50,6 +52,7 @@ sed -i '$ i\echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6' /etc/rc.d/rc.loca
 # InstallWgetCurl
   echo "Installing WGET and CURL..."
   yum -y install wget curl
+
 
 #SettingRepo 
   echo "Setting the Repository..."
@@ -70,15 +73,18 @@ sed -i 's/enabled = 1/enabled = 0/g' /etc/yum.repos.d/rpmforge.repo
 sed -i -e "/^\[remi\]/,/^\[.*\]/ s|^\(enabled[ \t]*=[ \t]*0\\)|enabled=1|" /etc/yum.repos.d/remi.repo
 rm -f *.rpm
 
+
 # RemoveUnused 
   echo "Removing the UNUSED Files..."
 yum -y remove sendmail;
 yum -y remove httpd;
 yum -y remove cyrus-sasl
 
+
 # UpdateSystem
   echo "Updating the System..."
 yum -y update
+
 
 # installwebserver 
   echo "Installing Web Server..."
@@ -88,6 +94,7 @@ service php-fpm restart
 chkconfig nginx on
 chkconfig php-fpm on
 
+
 # install essential package
 yum -y install rrdtool screen iftop htop nmap bc nethogs openvpn vnstat ngrep mtr git zsh mrtg unrar rsyslog rkhunter mrtg net-snmp net-snmp-utils expect nano bind-utils
 yum -y groupinstall 'Development Tools'
@@ -95,9 +102,11 @@ yum -y install cmake
 
 yum -y —enablerepo=rpmforge install axel sslh ptunnel unrar
 
+
 # matiin exim
 service exim stop
 chkconfig exim off
+
 
 # setting vnstat
 vnstat -u -i venet0
@@ -107,6 +116,7 @@ sed -i 's/eth0/venet0/g' /etc/sysconfig/vnstat
 service vnstat restart
 chkconfig vnstat on
 
+
 # install screenfetch
 cd
 wget https://github.com/KittyKatt/screenFetch/raw/master/screenfetch-dev
@@ -114,6 +124,7 @@ mv screenfetch-dev /usr/bin/screenfetch
 chmod +x /usr/bin/screenfetch
 echo "clear" » .bash_profile
 echo "screenfetch" » .bash_profile
+
 
 # install webserver
 cd
@@ -128,6 +139,7 @@ sed -i 's/apache/nginx/g' /etc/php-fpm.d/www.conf
 chmod -R +rx /home/vps
 service php-fpm restart
 service nginx restart
+
 
 # install openvpn
 wget -O /etc/openvpn/openvpn.tar "$source/openvpn-debian.tar"
@@ -150,6 +162,7 @@ service openvpn restart
 chkconfig openvpn on
 cd
 
+
 # configure openvpn client config
 cd /etc/openvpn/
 wget -O /etc/openvpn/1194-client.ovpn "$source/1194-client.conf"
@@ -163,6 +176,7 @@ tar cf client.tar 1194-client.ovpn pass.txt
 cp client.tar /home/vps/public_html/
 cd
 
+
 # install badvpn
 wget -O /usr/bin/badvpn-udpgw "$source/badvpn-udpgw"
 if [ "$OS" == "x86_64" ]; then
@@ -172,6 +186,7 @@ sed -i '$ i\screen -AmdS badvpn badvpn-udpgw —listen-addr 127.0.0.1:7300' /etc
 sed -i '$ i\screen -AmdS badvpn badvpn-udpgw —listen-addr 127.0.0.1:7300' /etc/rc.d/rc.local
 chmod +x /usr/bin/badvpn-udpgw
 screen -AmdS badvpn badvpn-udpgw —listen-addr 127.0.0.1:7300
+
 
 # install mrtg
 cd /etc/snmp/
@@ -193,11 +208,13 @@ LANG=C /usr/bin/mrtg /etc/mrtg/mrtg.cfg
 LANG=C /usr/bin/mrtg /etc/mrtg/mrtg.cfg
 cd
 
+
 # setting port ssh
 sed -i '/Port 22/a Port 143' /etc/ssh/sshd_config
 sed -i 's/#Port 22/Port  22/g' /etc/ssh/sshd_config
 service sshd restart
 chkconfig sshd on
+
 
 # install dropbear
 yum -y install dropbear
@@ -205,6 +222,7 @@ echo "OPTIONS=\"-p 109 -p 110 -p 443\"" > /etc/sysconfig/dropbear
 echo "/bin/false" » /etc/shells
 service dropbear restart
 chkconfig dropbear on
+
 
 # install vnstat gui
 cd /home/vps/public_html/
@@ -225,12 +243,14 @@ yum -y install fail2ban
 service fail2ban restart
 chkconfig fail2ban on
 
+
 # install squid
 yum -y install squid
 wget -O /etc/squid/squid.conf "$source/squid-centos.conf"
 sed -i $myip /etc/squid/squid.conf;
 service squid restart
 chkconfig squid on
+
 
 # install webmin
 cd
@@ -240,6 +260,7 @@ rm webmin-1.670-1.noarch.rpm
 service webmin restart
 chkconfig webmin on
 
+
 # pasang bmon
 if [ "$OS" == "x86_64" ]; then
   wget -O /usr/bin/bmon "$source/bmon64"
@@ -248,10 +269,12 @@ else
 fi
 chmod +x /usr/bin/bmon
 
+
 # downlaod script
 cd
 sed -i '$ i\screen -AmdS limit /root/limit.sh' /etc/rc.local
 sed -i '$ i\screen -AmdS limit /root/limit.sh' /etc/rc.d/rc.local
+
 
 # menu
   wget $source/generate
@@ -284,6 +307,7 @@ sed -i '$ i\screen -AmdS limit /root/limit.sh' /etc/rc.d/rc.local
   wget https://raw.githubusercontent.com/rasta-team/MyVPS/master/config/speedtest.py
   chmod +x speedtest.py
 
+
 # execmenu
   mv ./buatakun /usr/bin/buatakun
   mv ./generate /usr/bin/generate
@@ -311,6 +335,7 @@ sed -i '$ i\screen -AmdS limit /root/limit.sh' /etc/rc.d/rc.local
   mv ./autoreboot /usr/bin/autoreboot
   mv ./auto-limit-script /usr/bin/killmultilog
   mv ./menu /usr/local/bin/menu
+
 
 # menupermisi
   chmod +x /usr/local/bin/menu
@@ -340,12 +365,15 @@ sed -i '$ i\screen -AmdS limit /root/limit.sh' /etc/rc.d/rc.local
   chmod +x /usr/bin/generate
   chmod +x /usr/bin/buatakun
 
+
 # cron
 service crond start
 chkconfig crond on
 
+
 # set time GMT +7
 ln -fs /usr/share/zoneinfo/Asia/Kuala_Lumpur /etc/localtime;
+ 
 
 # finalisasi
 chown -R nginx:nginx /home/vps/public_html
