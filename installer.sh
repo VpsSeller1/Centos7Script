@@ -4,8 +4,7 @@
 ######################################
 
 set -e
-myip=ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0' | head -n1;
-myint=ifconfig | grep -B1 "inet addr:$myip" | head -n1 | awk '{print $1}';
+myip=$(wget -qO- ipv4.icanhazip.com);
 
 if [[ $EUID != 0 ]]; then
     echo "Script needs to be run as root user"
@@ -43,7 +42,7 @@ bgcyan='\e[1;3;46m'
 bgwhite='\e[1;3;47m'
 
 
-function VAR Intializer {
+function VARIntializer {
   echo -e "${cyan} ======================= ${noclr}" "${purple} AUTOSCRIPT SSH+VPN CENTOS 7 ${noclr}" "${cyan} ======================= ${noclr}"
   OS=uname -p;
 }
