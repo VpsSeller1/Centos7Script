@@ -1,0 +1,27 @@
+#!/bin/bash
+# ===========================================
+# | AUTOSCRIPT FOR INSTALLATION SSH AND VPN |
+# ===========================================
+# | Owner : Administrator JasonTheKiller    |
+# | Date Owned : 12/10/2018                 |
+# | Telegram : t.me/JasonKiller             |
+# ===========================================
+echo ""
+
+read -p "Type the USERNAME that you want to DELETE : " username
+egrep "^$username" /etc/passwd >/dev/null
+if [ $? -eq 0 ]; then
+# proses mengganti passwordnya
+userdel -f $username
+clear
+  echo "Autoscript by JasonTheKiller"
+  echo "Thank yoj for deleting the user's"
+  echo " "
+  echo "-----------------------------------------------"
+  echo -e "Username ${blue}$username${NC}successfully deleted.${red}HAPUS${NC}."
+  echo -e "The Username ${blue}$username${NC} are not accessily and deleted."
+  echo "-----------------------------------------------"
+else
+echo "Username are not exist/not found."
+    exit 1
+    fi

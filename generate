@@ -1,0 +1,39 @@
+#!/bin/bash
+# ===========================================
+# | AUTOSCRIPT FOR INSTALLATION SSH AND VPN |
+# ===========================================
+# | Owner : Administrator JasonTheKiller    |
+# | Date Owned : 12/10/2018                 |
+# | Telegram : t.me/JasonKiller             |
+# ===========================================
+            echo ""
+
+            IP=$(wget -qO- ipv4.icanhazip.com)
+            read -p "Total accounts that will generate : " banyakuser
+            read -p "Expiry Date Account(Hari): " aktif
+            today="$(date +"%Y-%m-%d")"
+            expire=$(date -d "$aktif days" +"%Y-%m-%d")
+            
+            echo""
+            echo "Autoscript by JasonTheKiller"
+            echo "Thanks for buying with JASONKILLER"
+            echo " "
+            echo "Your Generated Account's Detail"
+            echo "----------------------------------"
+            echo "Host/IP         : $IP"
+            echo "Dropbear Port   : 109/110/443"
+            echo "OpenSSH Port    : 22/143"
+            echo "Squid Proxy     : 80/8080/8000/3128"
+            echo "OpenVPN Config  : http://$IP/client.ovpn"
+            echo "Active Until    : $(date -d "$aktif days" +"%d-%m-%Y")"
+            echo "----------------------------------"
+            for (( i=1; i <= $banyakuser; i++ ))
+            do
+         	USER=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 15 | head -n 1`
+        	useradd -M -N -s /bin/false -e $expire $USER
+        	PASS=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 15 | head -n 1`;
+        	echo $USER:$USER | chpasswd
+	        echo "$i. Username/Password: $USER"
+            done
+
+            echo "----------------------------------"

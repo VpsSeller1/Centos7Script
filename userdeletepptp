@@ -1,0 +1,31 @@
+#!/bin/bash
+# ===========================================
+# | AUTOSCRIPT FOR INSTALLATION SSH AND VPN |
+# ===========================================
+# | Owner : Administrator JasonTheKiller    |
+# | Date Owned : 12/10/2018                 |
+# | Telegram : t.me/JasonKiller             |
+# ===========================================
+            
+            echo ""
+            read -p "Type USERNAME that you want to DELETE : " username
+            grep -E "^$username" /etc/ppp/chap-secrets >/dev/null
+            if [ $? -eq 0 ]; then
+            # proses mengganti passwordnya
+            username2="/$username/d";
+            sed -i $username2 /etc/ppp/chap-secrets
+            sed -i $username2 /var/lib/premium-script/data-user-pptp
+            sed -i '/^$/d' /etc/ppp/chap-secrets
+            sed -i '/^$/d' /var/lib/premium-script/data-user-pptp
+            echo""
+            echo "Script by JasonTheKiller"
+            echo "Thank you for using our services !"
+            echo " "
+            echo "-----------------------------------------------"
+            echo -e "Username ${blue}$username${NC} are removed ! ${red}HAPUS${NC}."
+            echo -e "Access for this ID  ${blue}$username${NC} are blocked and removed"
+            echo "-----------------------------------------------"
+            else
+            echo "Username tidak ditemukan di server anda"
+            exit 1
+            fi

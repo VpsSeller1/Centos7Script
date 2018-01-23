@@ -1,0 +1,27 @@
+#!/bin/bash
+# ===========================================
+# | AUTOSCRIPT FOR INSTALLATION SSH AND VPN |
+# ===========================================
+# | Owner : Administrator JasonTheKiller    |
+# | Date Owned : 12/10/2018                 |
+# | Telegram : t.me/JasonKiller             |
+# ===========================================
+            
+            echo ""
+
+            echo "===============================================";
+            echo " ";
+            if [ -e "/root/log-ban.txt" ]; then
+            echo "User that are ban by USER-BAN";
+            echo "Time - Username - Est.Multilogin"
+            echo "-------------------------------------";
+            cat /root/log-ban.txt
+            else
+            echo " None of ID are break rules"
+            echo " Or"
+            echo " Script user-ban are not activated"
+            fi
+            echo " ";
+            echo "===============================================";
+            echo "Autoscript by JasonTheKiller";
+            echo "Thank you for using our services !";

@@ -1,0 +1,37 @@
+#!/bin/bash
+# ===========================================
+# | AUTOSCRIPT FOR INSTALLATION SSH AND VPN |
+# ===========================================
+# | Owner : Administrator JasonTheKiller    |
+# | Date Owned : 12/10/2018                 |
+# | Telegram : t.me/JasonKiller             |
+# ===========================================
+          
+            echo ""
+
+
+            read -p "Type your existing USERNAME : " username
+            egrep "^$username" /etc/passwd >/dev/null
+            if [ $? -eq 0 ]; then
+            read -p "ENTER your NEW Password $username: " password
+
+            echo "Welcome to Password Changer..."
+            sleep 0.5
+            echo "Changing Password..."
+            sleep 0.5
+            egrep "^$username" /etc/passwd >/dev/null
+            echo -e "$password\n$password" | passwd $username
+            echo""
+            echo "Autoscript by JasonTheKiller"
+            echo "Thanks for changing password with JASONKILLER"
+            echo " "
+            echo "---------------------------------------"
+            echo -e "The Password for ${blue}$username${NC} was replaced with the NEW !."
+            echo -e "The NEW Password for ${blue}$username${NC} are ${red}$password${NC}"
+            echo "--------------------------------------"
+            echo " "
+
+            else
+            echo -e "Username ${red}$username${NC} was not found/not exist in the VPS !"
+            exit 0
+            fi

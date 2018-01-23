@@ -1,0 +1,47 @@
+#!/bin/bash
+# ===========================================
+# | AUTOSCRIPT FOR INSTALLATION SSH AND VPN |
+# ===========================================
+# | Owner : Administrator JasonTheKiller    |
+# | Date Owned : 12/10/2018                 |
+# | Telegram : t.me/JasonKiller             |
+# ===========================================
+            
+            echo ""
+
+
+            read -p "Type USERNAME that will be EXTENDING the EXPIRY DATE: " username
+            egrep "^$username" /etc/passwd >/dev/null
+            if [ $? -eq 0 ]; then
+            read -p "Type the DAY that you want to EXTEND(Hari): " masa_aktif
+
+            today=`date +%s`
+            masa_aktif_detik=$(( $masa_aktif * 86400 ))
+            saat_expired=$(($today + $masa_aktif_detik))
+            tanggal_expired=$(date -u --date="1970-01-01 $saat_expired sec GMT" +%Y/%m/%d)
+            tanggal_expired_display=$(date -u --date="1970-01-01 $saat_expired sec GMT" '+%d %B %Y')
+
+            echo "Welcome to Expiry Date Extender"
+            sleep 0.5
+            echo "Extending Expiry Date..."
+            sleep 0.5
+            passwd -u $username
+            usermod -e  $tanggal_expired $username
+            egrep "^$username" /etc/passwd >/dev/null
+            echo -e "$password\n$password" | passwd $username
+            echo""
+            echo "Autoscript Setup by JasonTheKiller"
+            echo "Thank you for extending the expiry date"
+            echo " "
+            echo "Account's Details that are EXTENDED EXPIRY DATE"
+            echo "---------------------------------------"
+            echo "   Username        : $username"
+            echo "   Masa aktif      : $masa_aktif Hari"
+            echo "   Tanggal Expired : $tanggal_expired_display"
+            echo "--------------------------------------"
+            echo " "
+
+            else
+            echo -e "Username ${red}$username${NC} NOT FOUND/NOT EXIST"
+            exit 0
+            fi

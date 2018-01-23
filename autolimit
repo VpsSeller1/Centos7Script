@@ -1,0 +1,63 @@
+#!/bin/bash
+# ===========================================
+# | AUTOSCRIPT FOR INSTALLATION SSH AND VPN |
+# ===========================================
+			
+			echo "--------------------------------------------------"
+            echo "Menu Sistem Limit User (Kill Multi Login) Automatic"
+            echo "--------------------------------------------------"
+            echo "1.  Set Auto Kill Multi Login 3 Minute Per Once"
+            echo "2.  Set Auto Kill Multi Login 5 Minute Per Once"
+            echo "3.  Set Auto Kill Multi Login 7 Minute Per Once"
+            echo "4.  Set Auto Kill Multi Login 10 Minute Per Once"
+            echo "5.  Set Auto Kill Multi Login 15 Minute Per Once"
+            echo "6.  Set Auto Kill Multi Login 30 Minute Per Once"
+            echo "7.  Disable Auto-Limit"
+            echo "8.  Check Multulogin User"
+            echo "9.  Disable Log Limit"
+            echo "--------------------------------------------------"
+            read -p "Choose your options (number): " x
+
+            if (($x<7)); then
+            echo " "
+            echo "--------------------------------------------------"
+            read -p "Your Total Allowed Multilogin: " max
+
+            fi
+            if test $x -eq 1; then
+            echo "*/3 * * * *  root /usr/local/bin/auto-limit-script $max" > /etc/cron.d/auto-limit-script
+            echo "User-Auto-Limit for 3 Minute Per Once."
+            elif test $x -eq 2; then
+            echo "*/5 * * * *  root /usr/local/bin/auto-limit-script $max" > /etc/cron.d/auto-limit-script
+            echo "User-Auto-Limit for 5 Minute Per Once."
+            elif test $x -eq 3; then
+            echo "*/7 * * * *  root /usr/local/bin/auto-limit-script $max" > /etc/cron.d/auto-limit-script
+            echo "User-Auto-Limit for 7 Minute Per Once."
+            elif test $x -eq 4; then
+            echo "*/10 * * * *  root /usr/local/bin/auto-limit-script $max" > /etc/cron.d/auto-limit-script
+            echo "User-Auto-Limit for 10 Minute Per Once."
+            elif test $x -eq 5; then
+            echo "*/15 * * * *  root /usr/local/bin/auto-limit-script $max" > /etc/cron.d/auto-limit-script
+            echo "User-Auto-Limit for 15 Minute Per Once."
+            elif test $x -eq 6; then
+            echo "*/30 * * * *  root /usr/local/bin/auto-limit-script $max" > /etc/cron.d/auto-limit-script
+            echo "User-Auto-Limit for 30 Minute Per Once."
+            elif test $x -eq 7; then
+            rm -f /etc/cron.d/auto-limit-script
+            echo "User-Auto-Limit are disabled."
+            elif test $x -eq 8; then
+            if [ ! -e /root/log-limit.txt ]; then
+        	echo "None of users are MULTILOGIN"
+        	else 
+        	echo 'Detection of MULTILOGIN users'
+        	echo "-------"
+         	cat /root/log-limit.txt
+            fi
+            elif test $x -eq 9; then
+            echo "" > /root/log-limit.txt
+            echo "Removed Log !"
+            else
+            echo "No Options in the MENU."
+            exit
+            fi
+            echo ""

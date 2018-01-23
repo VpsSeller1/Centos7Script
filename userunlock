@@ -1,0 +1,29 @@
+#!/bin/bash
+# ===========================================
+# | AUTOSCRIPT FOR INSTALLATION SSH AND VPN |
+# ===========================================
+# | Owner : Administrator JasonTheKiller    |
+# | Date Owned : 12/10/2018                 |
+# | Telegram : t.me/JasonKiller             |
+# ===========================================
+
+            echo ""
+
+
+            read -p "Type the USERNAME you want to UNLOCK : " username
+            egrep "^$username" /etc/passwd >/dev/null
+            if [ $? -eq 0 ]; then
+            # proses mengganti passwordnya
+            passwd -u $username
+            echo "Autoscript by JasonTheKiller"
+            echo "Thank you for unlocking the users"
+            echo " "
+            echo "-----------------------------------------------"
+            echo -e "Username ${blue}$username${NC} are being able ${green}to unlock and access it !${NC}."
+            echo -e "This username ${blue}$username${NC} can be access now !"
+            echo "seperti semula"
+            echo "-----------------------------------------------"
+            else
+            echo "No ID Available"
+            exit 1
+            fi

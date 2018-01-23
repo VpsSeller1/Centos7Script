@@ -1,0 +1,50 @@
+#!/bin/bash
+# ===========================================
+# | AUTOSCRIPT FOR INSTALLATION SSH AND VPN |
+# ===========================================
+# | Owner : Administrator JasonTheKiller    |
+# | Date Owned : 12/10/2018                 |
+# | Telegram : t.me/JasonKiller             |
+# ===========================================
+
+            echo ""
+
+
+            if [ "$1" = "" ]
+            then
+        echo
+        echo "How to Use: $0 Username"
+        echo "Example:  $0 budi"
+        echo
+        exit 1
+           fi
+
+        Username=`cat /etc/passwd | grep -Ew ^$1 | cut -d":" -f1`
+
+        if [ "$Username" = "" ]
+        then
+        echo "Username $1 Not found/Not Exist"
+        exit 2
+        fi
+
+        Userid=`cat /etc/passwd | grep -Ew ^$Username | cut -d":" -f3`
+        UserPrimaryGroupId=`cat /etc/passwd | grep -Ew ^$Username | cut -d":" -f4`
+        UserPrimaryGroup=`cat /etc/group | grep :"$UserPrimaryGroupId": | cut -d":" -f1`
+        UserInfo=`cat /etc/passwd | grep -Ew ^$Username | cut -d":" -f5`
+        UserHomeDir=`cat /etc/passwd | grep -Ew ^$Username | cut -d":" -f6`
+        UserShell=`cat /etc/passwd | grep -Ew ^$Username | cut -d":" -f7`
+        UserGroups=`groups $Username | awk -F": " '{print $2}'`
+        PasswordExpiryDate=`chage -l $Username | grep "Password expires" | awk -F": " '{print $2}'`
+        LastPasswordChangeDate=`chage -l $Username | grep "Last password change" | awk -F": " '{print $2}'`
+        AccountExpiryDate=`chage -l $Username | grep "Account expires" | awk -F": " '{print $2}'`
+        HomeDirSize=`du -hs $UserHomeDir | awk '{print $1}'`
+        echo
+        echo "Autoscript by JasonTheKiller"
+        echo "Thank you for using DETAILS ID"
+        echo " "
+        echo "Account's Details for $Username"
+        echo "---------------------------------------"
+        printf "%-25s : %5s  [User Id - %s]\n" "Username                 " "$Username" "$Userid"
+        printf "%-25s : %5s\n"                 "Last Password Change" "$LastPasswordChangeDate"
+        printf "%-25s : %5s\n"                 "Expired Account At     " "$AccountExpiryDate"
+        echo "--------------------------------------"
