@@ -17,29 +17,22 @@ echo "OK ! The installation will start now !"
 
 source="https://github.com/VpsSeller1/Centos7Script"
 
-# Reset
-noclr='\e[0m'
-
 # IpAddress
 myip='$(wget -qO- ipv4.icanhazip.com)';
 
 # useroot
-echo "Switching to root..."
 cd
 
 # setlocate
-echo "Setting Locale.."
 sed -i 's/AcceptEnv/#AcceptEnv/g' /etc/ssh/sshd_config
 service sshd restart
 
 # DisableIPV6
-  echo "Disabling IPV6..."
   echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
 sed -i '$ i\echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6' /etc/rc.local
 sed -i '$ i\echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6' /etc/rc.d/rc.local
 
 # InstallAPTGet
-  echo "Installing apt-get..."
   uname -i
   wget http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm
   rpm -i rpmforge-release-0.5.*.rpm
@@ -47,11 +40,9 @@ sed -i '$ i\echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6' /etc/rc.d/rc.loca
   sudo apt-get update
 
 # InstallWgetCurl
-  echo "Installing WGET and CURL..."
   yum -y install wget curl
 
 #SettingRepo 
-  echo "Setting the Repository..."
 wget http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm
 wget http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
 rpm -Uvh epel-release-6-8.noarch.rpm
@@ -70,17 +61,14 @@ sed -i -e "/^\[remi\]/,/^\[.*\]/ s|^\(enabled[ \t]*=[ \t]*0\\)|enabled=1|" /etc/
 rm -f *.rpm
 
 # RemoveUnused 
-  echo "Removing the UNUSED Files..."
 yum -y remove sendmail;
 yum -y remove httpd;
 yum -y remove cyrus-sasl
 
 # UpdateSystem
-  echo "Updating the System..."
 yum -y update
 
 # installwebserver 
-  echo "Installing Web Server..."
 yum -y install nginx php-fpm php-cli
 service nginx restart
 service php-fpm restart
