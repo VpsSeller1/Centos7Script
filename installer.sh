@@ -2,19 +2,12 @@
 ######################################
 #| Autoscript SSH + VPN for CentOS 7 |
 ######################################
-if [ $USER != 'root' ]; then
-echo "Sorry, for run the script please using root user"
-exit 1
-fi
-
 if [[ "$EUID" -ne 0 ]]; then
 echo "Sorry, you need to run this as root"
-exit 2
+exit
 fi
-
 echo "OK ! The installation will start now !"
 #source
-
 
 source="https://github.com/VpsSeller1/Centos7Script"
 
