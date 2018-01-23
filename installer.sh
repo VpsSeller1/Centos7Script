@@ -1,18 +1,10 @@
 #!/bin/bash
-######################################
-#| Autoscript SSH + VPN for CentOS 7 |
-######################################
-
-set -e
 myip=`ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0' | head -n1`;
 myint=`ifconfig | grep -B1 "inet addr:$myip" | head -n1 | awk '{print $1}'`;
+flag=0
 if [[ $EUID != 0 ]]; then
     echo "Script needs to be run as root user"
-exit 1
-fi
-if [[ ! -e /dev/net/tun ]]; then
-    echo "TUN is not available"
-exit 2
+exit
 fi
 echo "OK ! The installation will start now !"
 
@@ -281,7 +273,7 @@ cd
 sed -i '$ i\screen -AmdS limit /root/limit.sh' /etc/rc.local
 sed -i '$ i\screen -AmdS limit /root/limit.sh' /etc/rc.d/rc.local
 
-function MenuInstall {
+# menu
 echo "Installing Menu Options..."
   wget $source/generate
   wget $source/buatakun
@@ -312,9 +304,8 @@ echo "Installing Menu Options..."
   apt-get install python
   wget https://raw.githubusercontent.com/rasta-team/MyVPS/master/config/speedtest.py
   chmod +x speedtest.py
-}
 
-function ExecuteMenu {
+#execmenu
 echo "Executing all Menu..."
   mv ./buatakun /usr/bin/buatakun
   mv ./generate /usr/bin/generate
@@ -342,9 +333,8 @@ echo "Executing all Menu..."
   mv ./autoreboot /usr/bin/autoreboot
   mv ./auto-limit-script /usr/bin/killmultilog
   mv ./menu /usr/local/bin/menu
-}
 
-function MenuPermission {
+# menupermisi
 echo "Granting Menu's Permission..."
   chmod +x /usr/local/bin/menu
   chmod +x /usr/bin/auto-limit-script
@@ -372,7 +362,6 @@ echo "Granting Menu's Permission..."
   chmod +x /usr/bin/trial
   chmod +x /usr/bin/generate
   chmod +x /usr/bin/buatakun
-}
 
 # cron
 service crond start
@@ -395,7 +384,6 @@ service squid restart
 service webmin restart
 service crond start
 chkconfig crond on
-echo -e "${cyan} ======================= ${noclr}" "${purple} AUTOSCRIPT SSH+VPN CENTOS 7 ${noclr}" "${cyan} ======================= ${noclr}"
 
 # info
 clear
