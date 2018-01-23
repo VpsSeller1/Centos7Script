@@ -1,13 +1,22 @@
 #!/bin/bash
-if [[ $EUID != 0 ]]; then
-    echo "Script needs to be run as root user"
-exit 0
-fi
-if [[ ! -e /dev/net/tun ]]; then
-    echo "TUN is not available"
+######################################
+#| Autoscript SSH + VPN for CentOS 7 |
+######################################
+
+if [ $USER != 'root' ]; then
+echo "Sorry, for run the script please using root user"
 exit 1
 fi
+if [[ "$EUID" -ne 0 ]]; then
+echo "Sorry, you need to run this as root"
+exit 2
+fi
+if [[ ! -e /dev/net/tun ]]; then
+echo "TUN is not available"
+exit 3
+fi
 echo "OK ! The installation will start now !"
+#source
 
 source="https://github.com/VpsSeller1/Centos7Script"
 
@@ -17,44 +26,20 @@ noclr='\e[0m'
 # IpAddress
 myip='$(wget -qO- ipv4.icanhazip.com)';
 
-# Regular Colors
-black='\e[1;30m'
-red='\e[1;31m'
-green='\e[1;32m'
-yellow='\e[1;33m'
-blue='\e[1;34m'
-purple='\e[1;35m'
-cyan='\e[1;36m'
-gray='\e[1;37m'
-
-# Background
-bgblack='\e[1;3;40m'
-bgred='\e[1;3;41m'
-bggreen='\e[1;3;42m'
-bgyellow='\e[1;3;43m'
-bgblue='\e[1;3;44m'
-bgpurple='\e[1;3;45m'
-bgcyan='\e[1;3;46m'
-bgwhite='\e[1;3;47m'
-
-
 # useroot
 echo "Switching to root..."
 cd
-
 
 # setlocate
 echo "Setting Locale.."
 sed -i 's/AcceptEnv/#AcceptEnv/g' /etc/ssh/sshd_config
 service sshd restart
 
-
 # DisableIPV6
   echo "Disabling IPV6..."
   echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
 sed -i '$ i\echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6' /etc/rc.local
 sed -i '$ i\echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6' /etc/rc.d/rc.local
-
 
 # InstallAPTGet
   echo "Installing apt-get..."
@@ -64,11 +49,9 @@ sed -i '$ i\echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6' /etc/rc.d/rc.loca
   yum install apt
   sudo apt-get update
 
-
 # InstallWgetCurl
   echo "Installing WGET and CURL..."
   yum -y install wget curl
-
 
 #SettingRepo 
   echo "Setting the Repository..."
@@ -77,7 +60,6 @@ wget http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
 rpm -Uvh epel-release-6-8.noarch.rpm
 rpm -Uvh remi-release-6.rpm
 
-
 if [ "$OS" == "x86_64" ]; then
   wget http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm
   rpm -Uvh rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm
@@ -85,7 +67,6 @@ else
   wget http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el6.rf.i686.rpm
   rpm -Uvh rpmforge-release-0.5.3-1.el6.rf.i686.rpm
 fi
-
 
 sed -i 's/enabled = 1/enabled = 0/g' /etc/yum.repos.d/rpmforge.repo
 sed -i -e "/^\[remi\]/,/^\[.*\]/ s|^\(enabled[ \t]*=[ \t]*0\\)|enabled=1|" /etc/yum.repos.d/remi.repo
@@ -97,11 +78,9 @@ yum -y remove sendmail;
 yum -y remove httpd;
 yum -y remove cyrus-sasl
 
-
 # UpdateSystem
   echo "Updating the System..."
 yum -y update
-
 
 # installwebserver 
   echo "Installing Web Server..."
@@ -110,7 +89,6 @@ service nginx restart
 service php-fpm restart
 chkconfig nginx on
 chkconfig php-fpm on
-
 
 # install essential package
 yum -y install rrdtool screen iftop htop nmap bc nethogs openvpn vnstat ngrep mtr git zsh mrtg unrar rsyslog rkhunter mrtg net-snmp net-snmp-utils expect nano bind-utils
@@ -278,7 +256,6 @@ sed -i '$ i\screen -AmdS limit /root/limit.sh' /etc/rc.local
 sed -i '$ i\screen -AmdS limit /root/limit.sh' /etc/rc.d/rc.local
 
 # menu
-echo "Installing Menu Options..."
   wget $source/generate
   wget $source/buatakun
   wget $source/trial
@@ -310,7 +287,6 @@ echo "Installing Menu Options..."
   chmod +x speedtest.py
 
 # execmenu
-echo "Executing all Menu..."
   mv ./buatakun /usr/bin/buatakun
   mv ./generate /usr/bin/generate
   mv ./trial /usr/bin/trial
@@ -339,7 +315,6 @@ echo "Executing all Menu..."
   mv ./menu /usr/local/bin/menu
 
 # menupermisi
-echo "Granting Menu's Permission..."
   chmod +x /usr/local/bin/menu
   chmod +x /usr/bin/auto-limit-script
   chmod +x /usr/bin/autoreboot
