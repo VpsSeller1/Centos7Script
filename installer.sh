@@ -39,10 +39,9 @@ bgpurple='\e[1;3;45m'
 bgcyan='\e[1;3;46m'
 bgwhite='\e[1;3;47m'
 
-function Varinit {
-  echo -e "${cyan} ======================= ${noclr}" "${purple} AUTOSCRIPT SSH+VPN CENTOS 7 ${noclr}" "${cyan} ======================= ${noclr}"
-  OS=uname -p;
-}
+#varinit
+echo -e "${cyan} ======================= ${noclr}" "${purple} AUTOSCRIPT SSH+VPN CENTOS 7 ${noclr}" "${cyan} ======================= ${noclr}"
+OS=uname -p;
 
 function RootUse {
   echo "Switching to root..."
