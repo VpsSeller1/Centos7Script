@@ -1,13 +1,11 @@
 #!/bin/bash
-myip='curl icanhazip.com'
-flag=0
 if [[ $EUID != 0 ]]; then
     echo "Script needs to be run as root user"
-exit 1
+exit 0
 fi
 if [[ ! -e /dev/net/tun ]]; then
     echo "TUN is not available"
-exit 2
+exit 1
 fi
 echo "OK ! The installation will start now !"
 
@@ -15,6 +13,9 @@ source="https://github.com/VpsSeller1/Centos7Script"
 
 # Reset
 noclr='\e[0m'
+
+# IpAddress
+myip='$(wget -qO- ipv4.icanhazip.com)';
 
 # Regular Colors
 black='\e[1;30m'
@@ -37,25 +38,25 @@ bgcyan='\e[1;3;46m'
 bgwhite='\e[1;3;47m'
 
 
-#useroot
+# useroot
 echo "Switching to root..."
 cd
 
 
-#setlocate
+# setlocate
 echo "Setting Locale.."
 sed -i 's/AcceptEnv/#AcceptEnv/g' /etc/ssh/sshd_config
 service sshd restart
 
 
-#DisableIPV6
+# DisableIPV6
   echo "Disabling IPV6..."
   echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
 sed -i '$ i\echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6' /etc/rc.local
 sed -i '$ i\echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6' /etc/rc.d/rc.local
 
 
-#InstallAPTGet
+# InstallAPTGet
   echo "Installing apt-get..."
   uname -i
   wget http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm
@@ -64,7 +65,7 @@ sed -i '$ i\echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6' /etc/rc.d/rc.loca
   sudo apt-get update
 
 
-#InstallWgetCurl
+# InstallWgetCurl
   echo "Installing WGET and CURL..."
   yum -y install wget curl
 
@@ -90,19 +91,19 @@ sed -i 's/enabled = 1/enabled = 0/g' /etc/yum.repos.d/rpmforge.repo
 sed -i -e "/^\[remi\]/,/^\[.*\]/ s|^\(enabled[ \t]*=[ \t]*0\\)|enabled=1|" /etc/yum.repos.d/remi.repo
 rm -f *.rpm
 
-#RemoveUnused 
+# RemoveUnused 
   echo "Removing the UNUSED Files..."
 yum -y remove sendmail;
 yum -y remove httpd;
 yum -y remove cyrus-sasl
 
 
-#UpdateSystem
+# UpdateSystem
   echo "Updating the System..."
 yum -y update
 
 
-#installwebserver 
+# installwebserver 
   echo "Installing Web Server..."
 yum -y install nginx php-fpm php-cli
 service nginx restart
@@ -308,7 +309,7 @@ echo "Installing Menu Options..."
   wget https://raw.githubusercontent.com/rasta-team/MyVPS/master/config/speedtest.py
   chmod +x speedtest.py
 
-#execmenu
+# execmenu
 echo "Executing all Menu..."
   mv ./buatakun /usr/bin/buatakun
   mv ./generate /usr/bin/generate
