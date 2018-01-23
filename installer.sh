@@ -2,8 +2,10 @@
 ######################################
 #| Autoscript SSH + VPN for CentOS 7 |
 ######################################
+
 set -e
-myip=$(wget -qO- ipv4.icanhazip.com);
+myip=`ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0' | head -n1`;
+myint=`ifconfig | grep -B1 "inet addr:$myip" | head -n1 | awk '{print $1}'`;
 if [[ $EUID != 0 ]]; then
     echo "Script needs to be run as root user"
 exit 1
@@ -43,49 +45,44 @@ bgwhite='\e[1;3;47m'
 echo -e "${cyan} ======================= ${noclr}" "${purple} AUTOSCRIPT SSH+VPN CENTOS 7 ${noclr}" "${cyan} ======================= ${noclr}"
 OS=uname -p;
 
-function RootUse {
-  echo "Switching to root..."
+#useroot
+echo "Switching to root..."
 cd
-}
+
+#setlocate
+echo "Setting Locale.."
+sed -i 's/AcceptEnv/#AcceptEnv/g' /etc/ssh/sshd_config
+service sshd restart
 
 
-function SetLocale {
-  echo "Setting Locale.."
-  sed -i 's/AcceptEnv/#AcceptEnv/g' /etc/ssh/sshd_config
-  service sshd restart
-}
-
-
-function DisableIPV6 {
+#DisableIPV6
   echo "Disabling IPV6..."
   echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
 sed -i '$ i\echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6' /etc/rc.local
 sed -i '$ i\echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6' /etc/rc.d/rc.local
-}
 
 
-function InstallAPTGet {
+#InstallAPTGet
   echo "Installing apt-get..."
   uname -i
   wget http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm
   rpm -i rpmforge-release-0.5.*.rpm
   yum install apt
   sudo apt-get update
-}
 
 
-function InstallWgetCurl {
+#InstallWgetCurl
   echo "Installing WGET and CURL..."
   yum -y install wget curl
-}
 
-function SettingRepo {
+
+#SettingRepo 
   echo "Setting the Repository..."
 wget http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm
 wget http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
 rpm -Uvh epel-release-6-8.noarch.rpm
 rpm -Uvh remi-release-6.rpm
-}
+
 
 if [ "$OS" == "x86_64" ]; then
   wget http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm
@@ -95,30 +92,31 @@ else
   rpm -Uvh rpmforge-release-0.5.3-1.el6.rf.i686.rpm
 fi
 
+
 sed -i 's/enabled = 1/enabled = 0/g' /etc/yum.repos.d/rpmforge.repo
 sed -i -e "/^\[remi\]/,/^\[.*\]/ s|^\(enabled[ \t]*=[ \t]*0\\)|enabled=1|" /etc/yum.repos.d/remi.repo
 rm -f *.rpm
 
-function RemoveUnused {
+#RemoveUnused 
   echo "Removing the UNUSED Files..."
 yum -y remove sendmail;
 yum -y remove httpd;
 yum -y remove cyrus-sasl
-}
 
-function UpdateSystem {
+
+#UpdateSystem
   echo "Updating the System..."
 yum -y update
-}
 
-function installwebserver {
+
+#installwebserver 
   echo "Installing Web Server..."
 yum -y install nginx php-fpm php-cli
 service nginx restart
 service php-fpm restart
 chkconfig nginx on
 chkconfig php-fpm on
-}
+
 
 # install essential package
 yum -y install rrdtool screen iftop htop nmap bc nethogs openvpn vnstat ngrep mtr git zsh mrtg unrar rsyslog rkhunter mrtg net-snmp net-snmp-utils expect nano bind-utils
