@@ -350,7 +350,6 @@ chkconfig crond on
 
 # info
 clear
-echo "Installation process are finished !"
 echo -e "\e[0;32m Please REBOOT your VPS after this ! \e[0;0m"
 echo -e "\e[0;35m #=============================================# \e[0;0m"
 echo -e "\e[1;36m #        Thank you for buying with us !       # \e[0;0m"
