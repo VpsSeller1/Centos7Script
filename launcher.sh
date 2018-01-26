@@ -2,9 +2,6 @@
 
 source="https://github.com/VpsSeller1/Centos7Script"
 
-# initialisasi var
-OS=`uname -p`;
-
 # go to root
 cd
 
