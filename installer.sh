@@ -21,22 +21,12 @@ cd
 sed -i 's/AcceptEnv/#AcceptEnv/g' /etc/ssh/sshd_config
 service sshd restart
 
-# DisableIPV6
-  echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
+# disableipv6
+echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
 sed -i '$ i\echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6' /etc/rc.local
 sed -i '$ i\echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6' /etc/rc.d/rc.local
 
-# InstallAPTGet
-  uname -i
-  wget http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm
-  rpm -i rpmforge-release-0.5.*.rpm
-  yum install apt
-  sudo apt-get update
-
-# InstallWgetCurl
-  yum -y install wget curl
-
-#SettingRepo 
+# settingrepo 
 wget http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm
 wget http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
 rpm -Uvh epel-release-6-8.noarch.rpm
@@ -54,12 +44,12 @@ sed -i 's/enabled = 1/enabled = 0/g' /etc/yum.repos.d/rpmforge.repo
 sed -i -e "/^\[remi\]/,/^\[.*\]/ s|^\(enabled[ \t]*=[ \t]*0\\)|enabled=1|" /etc/yum.repos.d/remi.repo
 rm -f *.rpm
 
-# RemoveUnused 
+# removeunused 
 yum -y remove sendmail;
 yum -y remove httpd;
 yum -y remove cyrus-sasl
 
-# UpdateSystem
+# updatesystem
 yum -y update
 
 # installwebserver 
