@@ -1,7 +1,4 @@
 #!/bin/bash
-######################################
-#| Autoscript SSH + VPN for CentOS 7 |
-######################################
 if [ $USER != 'root' ]; then
 echo "Sorry, for run the script please using root user"
 exit
