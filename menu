@@ -1,34 +1,38 @@
 #!/bin/bash
-# ===========================================
-# | AUTOSCRIPT FOR INSTALLATION SSH AND VPN |
-# ===========================================
 myip=`ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0' | head -n1`;
-myint=`ifconfig | grep -B1 "inet addr:$myip" | head -n1 | awk '{print $1}'`;
+
+flag=0
+
+echo
 
 function create_user() {
-	useradd -M $uname
-	echo "$uname:$pass" | chpasswd
-	usermod -e $expdate $uname
+	useradd -e `date -d "$masaaktif days" +"%Y-%m-%d"` -s /bin/false -M $Login
+exp="$(chage -l $Login | grep "Account expires" | awk -F": " '{print $2}')"
 
 	myip=`ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0' | head -n1`;
 	myip2="s/xxxxxxxxx/$myip/g";	
-	wget -qO /tmp/client.ovpn "http://$myip/client.ovpn"
+	wget -qO /tmp/client.ovpn "http://vpn989.com/script/1194-client.conf"
 	sed -i 's/remote xxxxxxxxx 1194/remote xxxxxxxxx 443/g' /tmp/client.ovpn
 	sed -i $myip2 /tmp/client.ovpn
 	echo ""
-	echo "========================="
-	echo "Host IP : $myip"
-	echo "Port    : 443/22/80"
-	echo "Squid   : 8080/3128"
-	echo "========================="
+	echo "Username: $Login"
+	echo ""
+	echo "Password: $Pass"
+	echo ""
+	echo "Expired: $exp"
+	
+	echo "thanks for support Vpn989Script"
+}
 
 function renew_user() {
+    echo "Success ... Account already renewed"
 	echo "New expiration date for $uname: $expdate...";
 	usermod -e $expdate $uname
 }
 
 function delete_user(){
 	userdel $uname
+	echo "success Delete $uname"
 }
 
 function expired_users(){
@@ -41,6 +45,7 @@ function expired_users(){
 		userexpireinseconds=$(( $userexp * 86400 ))
 		todaystime=`date +%s`
 		if [ $userexpireinseconds -lt $todaystime ] ; then
+		    echo "User Expired List"
 			echo $username
 		fi
 	done
@@ -69,258 +74,121 @@ function used_data(){
 	ifconfig $myint | grep "RX bytes" | sed -e 's/ *RX [a-z:0-9]*/Received: /g' | sed -e 's/TX [a-z:0-9]*/\nTransfered: /g'
 }
 
-	clear
-	echo "--------------- WELCOME TO THE SERVER - IP : $myip ---------------"
-	cname=$( awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo )
-	cores=$( awk -F: '/model name/ {core++} END {print core}' /proc/cpuinfo )
-	freq=$( awk -F: ' /cpu MHz/ {freq=$2} END {print freq}' /proc/cpuinfo )
-	tram=$( free -m | awk 'NR==2 {print $2}' )
-	swap=$( free -m | awk 'NR==4 {print $2}' )
-	up=$(uptime|awk '{ $1=$2=$(NF-6)=$(NF-5)=$(NF-4)=$(NF-3)=$(NF-2)=$(NF-1)=$NF=""; print }')
-
-	echo -e "\e[032;1mCPU model:\e[0m $cname"
-	echo -e "\e[032;1mNumber of cores:\e[0m $cores"
-	echo -e "\e[032;1mCPU frequency:\e[0m $freq MHz"
-	echo -e "\e[032;1mTotal amount of ram:\e[0m $tram MB"
-	echo -e "\e[032;1mTotal amount of swap:\e[0m $swap MB"
-	echo -e "\e[032;1mSystem uptime:\e[0m $up"
-    echo -e "\e[0;35m##########################################################################\e[0;0m"
-	echo -e "\e[1;36m#                         Owner Autoscript Details                       #\e[0;0m"
-	echo -e "\e[1;36m#               Creator & Owner for this Autoscript since 2017           #\e[0;0m"
-	echo -e "\e[0;35m##########################################################################\e[0;0m"
-	echo -e "\e[1;35m#                       MENU YANG TERDAPAT DALAM SCRIPT                  #\e[0;0m"
-	echo -e "\e[0;35m##########################################################################\e[0;0m"
-	echo -e "\e[031;1m# 1\e[0m) Create User SSH/VPN                                           #(\e[34;1muser-add\e[0m)"
-	echo -e "\e[031;1m# 2\e[0m) Quick Generate User SSH/VPN                                   #(\e[34;1muser-gen\e[0m)"
-	echo -e "\e[031;1m# 3\e[0m) Generate Trial User                                           #(\e[34;1muser-trial\e[0m)"
-	echo -e "\e[031;1m# 4\e[0m) Replace User's Password                                       #(\e[34;1muser-pass\e[0m)"
-	echo -e "\e[031;1m# 5\e[0m) Renew Expired User's                                          #(\e[34;1muser-renew\e[0m)"
-	echo -e "\e[031;1m# 6\e[0m) Delete User's                                                 #(\e[34;1muser-del\e[0m)"
-	echo -e "\e[031;1m# 7\e[0m) Check OpenSSH/Dropbear Multilogin                             #(\e[34;1muser-login\e[0m)"
-	echo -e "\e[031;1m# 8\e[0m) Auto Limit Multi Login                                        #(\e[34;1mauto-limit\e[0m)"
-	echo -e "\e[031;1m# 9\e[0m) Details Of SSH/VPN User's                                     #(\e[34;1muser-detail\e[0m)"
-	echo -e "\e[031;1m#10\e[0m) Delete Expired User's                                         #(\e[34;1mdelete-user-expire\e[0m)"
-	echo -e "\e[031;1m#11\e[0m) Kill Multilogin                                               #(\e[34;1mauto-kill-user\e[0m)"
-	echo -e "\e[031;1m#12\e[0m) Auto Banned User's                                            #(\e[34;1mbanned-user\e[0m)"
-	echo -e "\e[031;1m#13\e[0m) Unbanned User's                                               #(\e[34;1munbanned-user\e[0m)"
-	echo -e "\e[031;1m#14\e[0m) Lock SSH/VPN User's                                           #(\e[34;1muser-lock\e[0m)"
-	echo -e "\e[031;1m#15\e[0m) Unlock the Locked SSH/VPN User's                              #(\e[34;1muser-unlock\e[0m)"
-	echo -e "\e[031;1m#16\e[0m) List of User's that are locked by LIMIT                       #(\e[34;1mlog-limit\e[0m)"
-	echo -e "\e[031;1m#17\e[0m) List of User's that are locked by BAN                         #(\e[34;1mlog-ban\e[0m)"
-	echo -e "\e[031;1m#18\e[0m) Create PPTP VPN User's                                        #(\e[34;1muser-add-pptp\e[0m)"
-	echo -e "\e[031;1m#19\e[0m) Delete PPTP VPN's User                                        #(\e[34;1muser-delete-pptp\e[0m)"
-	echo -e "\e[031;1m#20\e[0m) PPTP VPN's Details                                            #(\e[34;1mdetail-pptp\e[0m)"
-	echo -e "\e[031;1m#21\e[0m) Check Login PPTP VPN                                          #(\e[34;1muser-login-pptp\e[0m)"
-	echo -e "\e[031;1m#22\e[0m) List of Registered PPTP VPN                                   #(\e[34;1malluser-pptp\e[0m)"
-	echo -e "\e[031;1m#23\e[0m) Set Auto Reboot                                               #(\e[34;1mauto-reboot\e[0m)"
-	echo -e "\e[031;1m#24\e[0m) Speedtest                                                     #(\e[34;1mcek-speedttes-vps\e[0m)"
-	echo -e "\e[031;1m#25\e[0m) Memory Usage                                                  #(\e[34;1mps-mem\e[0m)"
-	echo -e "\e[031;1m#26\e[0m) Change OpenVPN Port                                           #(\e[34;1mchange-openvpn-port\e[0m)"
-	echo -e "\e[031;1m#27\e[0m) Change Dropbear Port                                          #(\e[34;1mchange-dropbear-port\e[0m)"
-	echo -e "\e[031;1m#28\e[0m) Change Squid Port                                             #(\e[34;1mchange-squid-port\e[0m)"
-	echo -e "\e[031;1m#29\e[0m) Restart OpenVPN                                               #(\e[34;1mrestart-openvpn\e[0m)"
-	echo -e "\e[031;1m#30\e[0m) Restart Dropbear                                              #(\e[34;1mrestart-dropbear\e[0m)"
-	echo -e "\e[031;1m#31\e[0m) Restart Squid                                                 #(\e[34;1mrestart-squid\e[0m)"
-	echo -e "\e[031;1m#32\e[0m) Restart Webmin                                                #(\e[34;1mrestart-webmin\e[0m)"
-	echo -e "\e[031;1m#33\e[0m) Benchmark                                                     #(\e[34;1mbenchmark\e[0m)"
-	echo -e "\e[031;1m#34\e[0m) Change Pasword VPS                                            #(\e[34;1mpassword\e[0m)"
-	echo -e "\e[031;1m#35\e[0m) Change Hostname VPS                                           #(\e[34;1mhostname\e[0m)"
-	echo -e "\e[031;1m#36\e[0m) Reboot Server                                                 #(\e[34;1mreboot\e[0m)"
-	echo -e "\e[031;1m# x\e[0m) Exit                                                          #"
-	echo -e "\e[0;35m##########################################################################\e[0;0m"
-	read -p "Choose your desired options and ENTER : " option1
-	case $option1 in
-        1)  
-            clear
-            buatakun
+clear
+echo ""
+echo -e "\e[31m              _   _              _____ _____  _____" 
+echo -e "\e[32m             | | | |            |  _  |  _  ||  _  |"
+echo -e "\e[33m             | | | |_ __  _ __  | |_| |\ V / | |_| |"
+echo -e "\e[34m             | | | | '_ \| '_ \ \____ |/ _ \ \____ |"
+echo -e "\e[35m             \ \_/ / |_) | | | |.___/ / |_| |.___/ /"
+echo -e "\e[36m              \___/| .__/|_| |_|\____/\_____/\____/" 
+echo -e "\e[32m                   | |"                              
+echo -e "\e[35m                   |_|"
+echo -e "\e[31m                |================================|"
+echo -e "\e[32m                |    AUTO SCRIPT BY VPN989       |"
+echo -e "\e[33m                |   WHATSAPP : 0143749392        |"
+echo -e "\e[34m                |  TELEGRAM  : @Chandra989       |"
+echo -e "\e[35m                |    GROUP   : @Vpn989Group      |"
+echo -e "\e[33m                |_______________________________ |"
+echo -e "\e[31m                |       COPYRIGHT BY VPN989      |"
+echo -e "\e[35m                |================================|
+";PS3='Please enter your choice: '
+options=("Add User" "Renew User" "Delete User" "User List" "Expired Users" "Restart Server" "Change Password" "Data Usage" "Ram Status" "Monitor" "Download Client" "Change OVPN Port" "Change Dropbear" "Change Squid3" "Update Server" "Quit")
+select opt in "${options[@]}"
+do
+    case $opt in
+        "Add User")
+            read -p "Enter username: " Login
+            read -p "Enter password: " Pass
+            read -p "Enter expired (Day): " masaaktif
+	    create_user
+	    break
             ;;
-        2)  
-            clear
-            generate
+        "Renew User")
+            read -p "Enter username to renew: " uname
+            read -p "Enter expiry date (YYYY-MM-DD): " expdate
+            renew_user
+            break
             ;;
-        3)	
-            clear
-            trial
-			;;	
-        4)
-            clear
-            userpass
-            ;;
-        5)
-            clear
-            userrenew
-			;;
-        6)
-            userdelete
+        "Delete User")
+            read -p "Enter username to be removed: " uname
+            delete_user
+            break
             ;;		
-		7)
-		    clear
-	        userlogin
+		"User List")
+            user-list
+            break
+            ;;
+		"Users Not Expired")
+			not_expired_users
+			break
 			;;
-		8)
-		    clear
-			autolimit
+		"Expired Users")
+			expired_users
+			break
+			;;		
+		"Restart Server")
+			reboot
+			break
 			;;	
-		9)
-		    clear
-            userdetail
-            ;;
-        10)
-               clear
-               deleteuserexpire
+		"Change Password")
+			passwd
+			break
+			;;
+		"Data Usage")
+			used_data
+			break
+			;;
+		"Ram Status")
+		    free -h | grep -v + > /tmp/ramcache
+            cat /tmp/ramcache | grep -v "Swap"
+            break
+              ;;
+       "Monitor")
+               monssh
+                break
 	          ;;
-	    11)
-	          clear
-	          #!/bin/bash
-               echo ""
-	           echo "    AUTO KILL MULTI LOGIN    "    
-	           echo "-----------------------------"
-               autokilluser
-               echo "-----------------------------"
-               echo "AUTO KILL MULTI LOGIN SELESAI"
-               ;;
-        12)
-               clear
-               userban
-	          ;;
-	    13)
-               clear
-               userunban
-	          ;;
-	    14)
-	        clear
-            userlock
-			;;
-		15)
-		    clear
-            userunlock
-			;;
-		16)
-		    clear
-		    loglimit
-			;;
-		17)
-		    clear
-            logban
-			;;
-	    18)
-	        clear
-            useraddpptp
-			;;
-		19)
-		    clear
-            userdeletepptp
-			;;
-	    20)
-	        clear
-            detailpptp
-            ;;
-        21)
-            clear
-            userloginpptp
-			;;
-		22)
-		    clear
-            alluserpptp
-			;;
-	    23)
-	         clear
-             autoreboot
-            ;;
-	    24)
-	         clear
-            echo ""
-            echo "Speed Test Server"
-            ./speedtest.py --share
-            echo "Est.Speedtest..."
-            ;;
-        25)
-            ps-mem
-            ;;
-		26)	
-		    clear
-            echo "Masukan Port OpenVPN yang diinginkan:"
+        "Download Client")
+		       myip=`ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0' | head -n1`;
+	myip2="s/xxxxxxxxx/$myip/g";	
+	wget -qO /tmp/client.ovpn "http://antclub.5gbfree.com/autoscript/debian7/1194-client.conf"
+	sed -i 's/remote xxxxxxxxx 1194/remote xxxxxxxxx 443/g' /tmp/client.ovpn
+	sed -i $myip2 /tmp/client.ovpn
+	echo "Download your client config  "
+	echo "http://$myip:989/client.tar"
+		       break
+			   ;;
+		"Change OVPN Port")	
+            echo "What OpenVPN port would you like  to change to?"
             read -p "Port: " -e -i 1194 PORT
             sed -i "s/port [0-9]*/port $PORT/" /etc/openvpn/1194.conf
             service openvpn restart
             echo "OpenVPN Updated : Port $PORT"
+			break
 			;;
-		27)	
-		    clear
-            echo "Masukan Port Dropbear yang diinginkan:"
+		"Change Dropbear")	
+            echo "What Dropbear port would you like to change to?"
             read -p "Port: " -e -i 443 PORT
             sed -i "s/DROPBEAR_PORT=[0-9]*/DROPBEAR_PORT=$PORT/" /etc/default/dropbear
             service dropbear restart
             echo "Dropbear Updated : Port $PORT"
+			break
 			;;
-        28)	
-            clear
-            echo "Masukan Port Squid yang diinginkan:"
+        "Change Squid3")	
+            echo "What Squid3 port would you like to change to?"
             read -p "Port: " -e -i 8080 PORT
             sed -i "s/http_port [0-9]*/http_port $PORT/" /etc/squid3/squid.conf
             service squid3 restart
             echo "echo "Squid3 Updated : Port $PORT""
-			;;			
-        29)	
-            clear
-            echo "Service Openvpn restart .................tunggu sebentar"
-            service openvpn restart
-            echo "Restart OpenVPN selesai"
-			;;	
-		30)
-            clear
-            echo "Servie dropbear restart .................tunggu sebentar"
-            service dropbear restart
-            echo "Restart Dropbear selesai"
-            ;;
-		31) 
-		    clear
-		    echo "Service Squid restart .................tunggu sebentar"
-			service squid3 restart
-			echo "Restart Squid selesai"
+			break
 			;;
-		32)
-		    clear
-		    /etc/init.d/webmin restart
-		    echo "Restart Webmin selesai"
-		    ;;
-		33)
-		    clear
-            wget freevps.us/downloads/bench.sh -O - -o /dev/null|bash
-           ;;
-        34)
-		    echo "Masukan Password VPS, yang mau diganti :"
-		    passwd
-			;;	
-		35)
-			echo "Masukan HOSTNAME VPS, yang mau diganti :"
-            echo "  contoh : " hostname AutoscriptVPS 
+        "Update Server")
+         apt-get update
+          break
+           ;;		  
+        "Quit")
+            break
             ;;
-		36)
-		    clear
-			reboot
-            ;;
-		37)
-			clear
-			echo -e "\e[0;34m CHOOSE WHAT LIST YOU WANT ! (1-3)  \e[0;0m"
-		
-			echo "1) DAILY"
-			read -p "1"
-			vnstat -d
-		
-			echo "2) WEEKLY"
-			read -p "2"
-			vnstat -w
-		
-			echo "3) MONTHLY"
-			read -p "3"
-			vnstat -m
-	
-			echo -e "Press 0 to exit"
-			read -p "0"
-			exit
-			;;
-        x)
-            ;;
-        *) menu;;
+        *) echo invalid option;;
     esac
+done | lolcat
