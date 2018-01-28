@@ -4,7 +4,7 @@
 ######################################
 if [ $USER != 'root' ]; then
 echo "Sorry, for run the script please using root user"
-exit 1
+exit
 fi
 echo "OK ! The installation will start now !"
 #source
