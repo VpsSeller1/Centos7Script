@@ -110,8 +110,6 @@ fi
 wget -O /etc/iptables.up.rules "$source/iptables.up.rules"
 sed -i '$ i\iptables-restore < /etc/iptables.up.rules' /etc/rc.local
 sed -i '$ i\iptables-restore < /etc/iptables.up.rules' /etc/rc.d/rc.local
-MYIP=curl -s ifconfig.me;
-MYIP2="s/xxxxxxxxx/$myip/g";
 sed -i $myip /etc/iptables.up.rules;
 iptables-restore < /etc/iptables.up.rules
 sysctl -w net.ipv4.ip_forward=1
