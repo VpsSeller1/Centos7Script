@@ -6,12 +6,6 @@ if [ $USER != 'root' ]; then
 echo "Sorry, for run the script please using root user"
 exit 1
 fi
-
-if [[ "$EUID" -ne 0 ]]; then
-echo "Sorry, you need to run this as root"
-exit 2
-fi
-
 echo "OK ! The installation will start now !"
 #source
 
