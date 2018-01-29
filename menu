@@ -76,21 +76,10 @@ function used_data(){
 
 clear
 echo ""
-echo -e "\e[31m              _   _              _____ _____  _____" 
-echo -e "\e[32m             | | | |            |  _  |  _  ||  _  |"
-echo -e "\e[33m             | | | |_ __  _ __  | |_| |\ V / | |_| |"
-echo -e "\e[34m             | | | | '_ \| '_ \ \____ |/ _ \ \____ |"
-echo -e "\e[35m             \ \_/ / |_) | | | |.___/ / |_| |.___/ /"
-echo -e "\e[36m              \___/| .__/|_| |_|\____/\_____/\____/" 
-echo -e "\e[32m                   | |"                              
-echo -e "\e[35m                   |_|"
 echo -e "\e[31m                |================================|"
-echo -e "\e[32m                |    AUTO SCRIPT BY VPN989       |"
-echo -e "\e[33m                |   WHATSAPP : 0143749392        |"
-echo -e "\e[34m                |  TELEGRAM  : @Chandra989       |"
-echo -e "\e[35m                |    GROUP   : @Vpn989Group      |"
-echo -e "\e[33m                |_______________________________ |"
-echo -e "\e[31m                |       COPYRIGHT BY VPN989      |"
+echo -e "\e[32m                |    AUTOSCRIPT CENTOS 7 32/64   |"
+echo -e "\e[33m                |================================|
+echo -e "\e[31m                |      COPYRIGHT BY VPSELL       |"
 echo -e "\e[35m                |================================|
 ";PS3='Please enter your choice: '
 options=("Add User" "Renew User" "Delete User" "User List" "Expired Users" "Restart Server" "Change Password" "Data Usage" "Ram Status" "Monitor" "Download Client" "Change OVPN Port" "Change Dropbear" "Change Squid3" "Update Server" "Quit")
